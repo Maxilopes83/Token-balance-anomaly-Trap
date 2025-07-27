@@ -1,7 +1,7 @@
 # Token-balance-anomaly-Trap
 Trap for tracking balance of various tokens (Drosera trap sergiant/captain)
 
-Objective
+# Objective
 
 Create a functional and deployable Drosera trap that:
 
@@ -13,7 +13,7 @@ Triggers a response when balance deviation exceeds a given threshold (e.g., 5%)
 
 Integrates with a separate alert contract to handle responses.
 
-Problem
+# Problem
 
 Any unexpected change in the balance on the wallet may indicate either theft or some kind of error.
 
