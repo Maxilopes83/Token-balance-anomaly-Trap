@@ -75,7 +75,7 @@ contract TokenBalanceAnomalyTrap is ITrap {
 
 # Response Contract: LogAlertReceiver.sol
 
-``` <pre> // SPDX-License-Identifier: MIT
+<pre> // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
 contract LogAlertReceiver {
@@ -84,4 +84,13 @@ contract LogAlertReceiver {
     function logAnomaly(string calldata message) external {
         emit Alert(message);
     }
-}
+} </pre>
+
+
+# What It Solves
+
+Detects suspicious token flows from monitored addresses
+
+Provides an automated alerting mechanism
+
+Can integrate with automation logic (e.g., freezing funds)
