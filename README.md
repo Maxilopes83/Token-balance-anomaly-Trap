@@ -26,4 +26,64 @@ Note: address public constant tokenAddress = 0x54a53Ccdf04ad09CE673973E818c50917
       thresholdPercent = 5   -  you can change percentage
       
 
+<pre> // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.29;
+
+interface ITrap {
+    function collect() external returns (bytes memory);
+    function shouldRespond(bytes[] calldata data) external pure returns (bool, bytes memory);
+}
+
+interface IERC20 {
+    function balanceOf(address account) external view returns (uint256);
+}
+
+contract TokenBalanceAnomalyTrap is ITrap {
+    address public constant tokenAddress = 0x54a53Ccdf04ad09CE673973E818c50917a892b3f; //  change
+    address public constant watchAddress = 0xe64dE8a50813307119B7e083B20D894C9cB1dbAB; //  change
+    uint256 public constant thresholdPercent = 5;
+
+    function collect() external view override returns (bytes memory) {
+    uint256 tokenBalance = IERC20(tokenAddress).balanceOf(watchAddress);
+    return abi.encode(tokenBalance);
+
+
+
+
+}
+    function shouldRespond(bytes[] calldata data) external pure override returns (bool, bytes memory) {
+        if (data.length < 2) return (false, "Insufficient data");
+
+        uint256 current = abi.decode(data[0], (uint256));
+        uint256 previous = abi.decode(data[1], (uint256));
+
+        if (previous == 0 && current > 0) {
+            return (true, "Initial non-zero balance detected");
+        }
+
+        uint256 diff = current > previous ? current - previous : previous - current;
+        uint256 percent = previous > 0 ? (diff * 100) / previous : 0;
+
+        if (percent >= thresholdPercent) {
+            return (true, "Balance anomaly detected");
+        }
+
+        return (false, "");
+    }
+} </pre>
+
+
+# Response Contract: LogAlertReceiver.sol
+
+<pre> // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.29;
+
+contract LogAlertReceiver {
+    event Alert(string message);
+
+    function logAnomaly(string calldata message) external {
+        emit Alert(message);
+    }
+} </pre>
+
 
