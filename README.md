@@ -86,4 +86,12 @@ contract LogAlertReceiver {
     }
 } </pre>
 
+# What It Solves
+
+Detects suspicious token flows from monitored addresses
+
+Provides an automated alerting mechanism
+
+Can integrate with automation logic (e.g., freezing funds)
+
 
