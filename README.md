@@ -25,8 +25,8 @@ Note: address public constant tokenAddress = 0x54a53Ccdf04ad09CE673973E818c50917
       address public constant watchAddress = 0xe64dE8a50813307119B7e083B20D894C9cB1dbAB - you need to change the wallet address you want to track
       thresholdPercent = 5   -  you can change percentage
       
-
- <pre> // SPDX-License-Identifier: MIT
+```
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
 interface ITrap {
@@ -70,12 +70,14 @@ contract TokenBalanceAnomalyTrap is ITrap {
 
         return (false, "");
     }
-} </pre>
+}
+```
 
 
 # Response Contract: LogAlertReceiver.sol
 
-<pre> // SPDX-License-Identifier: MIT
+```
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.29;
 
 contract LogAlertReceiver {
@@ -84,7 +86,8 @@ contract LogAlertReceiver {
     function logAnomaly(string calldata message) external {
         emit Alert(message);
     }
-} </pre>
+}
+```
 
 
 # What It Solves
@@ -94,3 +97,67 @@ Detects suspicious token flows from monitored addresses
 Provides an automated alerting mechanism
 
 Can integrate with automation logic (e.g., freezing funds)
+
+
+# Deployment & Setup Instructions
+
+  *Deploy Contracts (e.g., via Foundry)*
+
+```
+ forge create src/TokenBalanceAnomalyTrap.sol:TokenBalanceAnomalyTrap \
+  --rpc-url https://ethereum-hoodi-rpc.publicnode.com \
+  --private-key 0x... 
+ ```
+
+ ```
+ forge create src/LogAlertReceiver.sol:LogAlertReceiver \
+  --rpc-url https://ethereum-hoodi-rpc.publicnode.com \
+  --private-key 0x...
+```
+
+*Update drosera.toml*
+```
+[traps.mytrap]
+path = "out/TokenBalanceAnomalyTrap.sol/TokenBalanceAnomalyTrap.json"
+response_contract = "<LogAlertReceiver address>"
+response_function = "logAnomaly(string)"
+```
+
+*Apply changes*
+```
+DROSERA_PRIVATE_KEY=0x... drosera apply
+```
+
+# Testing the Trap
+
+Send Tokens to/from target address on Ethereum Hoodi testnet.
+
+Wait some blocks.
+
+Observe logs from Drosera operator:
+
+get ShouldRespond='true' in logs and Drosera dashboard
+
+# Extensions & Improvements
+
+Allow dynamic threshold setting via setter
+
+Track balances
+
+Chain multiple traps using a unified collector
+
+# Date & Author
+
+First created: July 27, 2025
+
+Author: Maxilopes83
+
+Discord: maxilopes83
+
+
+
+
+
+
+
+
